@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+}
+
+div {
+    /* position: absolute; */
+}
+
+.invadersContainer {
+    display: inline-block;
+    /* width: 100% !important; */
+    /* height: auto !important; */
+    /* overflow: auto; */
+    background: red;
+    position: absolute;
+}
+
+.box {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background: red;
+}
+
+.explosion {
+    width: 39px;
+    height: 27px;
+    position: absolute;
+    display: inline-block;
+    background: url("../images/explosion.png");
+}
+
+.board {
+    width: 754px;;
+    height: 800px;
+    display: inline-block;
+    position: absolute;
+    border: 1px white solid;
+}
+.bullet {
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: white;
+    position: absolute;
+}
+
+.battleShip {
+    display: inline-block;
+    width: 39px;
+    height: 24px;
+    position: absolute;
+    background: url("../images/battleShip.png");
+}
+
+.smallAlien1 {
+    display: inline-block;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: url("../images/smallAlien1.png");
+}
+
+.smallAlien2 {
+    display: inline-block;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: url("../images/smallAlien2.png");
+}
+
+.mediumAlien1 {
+    display: inline-block;
+    position: absolute;
+    width: 33px;
+    height: 24px;
+    background: url("../images/mediumAlien1.png");
+}
+
+.mediumAlien2 {
+    display: inline-block;
+    position: absolute;
+    width: 33px;
+    height: 24px;
+    background: url("../images/mediumAlien2.png");
+}
+
+.bigAlien1 {
+    display: inline-block;
+    position: absolute;
+    width: 36px;
+    height: 24px;
+    background: url("../images/bigAlien1.png");
+}
+
+.bigAlien2 {
+    display: inline-block;
+    position: absolute;
+    width: 36px;
+    height: 24px;
+    background: url("../images/bigAlien2.png");
+}

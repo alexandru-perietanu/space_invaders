@@ -1,0 +1,141 @@
+.shield {
+    position: absolute;
+    width: 54px;
+    height: 48px;
+    display: inline-block;
+}
+
+.deadBrick {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+}
+
+.shieldFullBrick {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrick.png");
+}
+
+.shieldFullBrickHit1 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickHit1.png");
+}
+
+.shieldFullBrickHit2 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickHit2.png");
+}
+
+.shieldFullBrickHit3 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickHit3.png");
+}
+
+.shieldFullBrickBottomMiddle {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickBottomMiddle.png");
+}
+
+.shieldFullBrickBottomMiddleHit1 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickBottomMiddleHit1.png");
+}
+
+.shieldFullBrickBottomMiddleHit2 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickBottomMiddleHit2.png");
+}
+
+.shieldFullBrickBottomMiddleHit3 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickBottomMiddleHit3.png");
+}
+
+.shieldFullBrickUpLeft {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpLeft.png");
+}
+
+.shieldFullBrickUpLeftHit1 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpLeftHit1.png");
+}
+
+.shieldFullBrickUpLeftHit2 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpLeftHit2.png");
+}
+
+.shieldFullBrickUpLeftHit3 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpLeftHit3.png");
+}
+
+.shieldFullBrickUpRight {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpRight.png");
+}
+
+.shieldFullBrickUpRightHit1 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpRightHit1.png");
+}
+
+.shieldFullBrickUpRightHit2 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpRightHit2.png");
+}
+
+.shieldFullBrickUpRightHit3 {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    position: absolute;
+    background: url("../images/shieldFullBrickUpRightHit3.png");
+}

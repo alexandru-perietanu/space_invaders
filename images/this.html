@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///E:/training/personal/16.03.2019/plugins/radio.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>Title of the document</title>
+    <script src="file:///E:/training/personal/16.03.2019/plugins/jquery-3.3.1.min.js"></script>
+    <script>
+        (function ($) {
+            $.fn.radio = function () {
+                var model = [
+                    {
+                        name: "ana",
+                        value: false
+                    },
+                    {
+                        name: "geroge",
+                        value: false
+                    },
+                    {
+                        name: "ion",
+                        value: false
+                    },
+                    {
+                        name: "vasile",
+                        value: false
+                    },
+                    {
+                        name: "maria",
+                        value: false
+                    }
+                ];
+
+                // <div class="customCheckbox">
+                //     <div class="button">
+
+                //     </div>
+                //     <div class="itemText">
+                //         text
+                //     </div>
+                // </div>
+                start();
+                function start() {
+                    // var checkbox = document.getElementsByClassName("customCheckbox")[0];
+                    var customCheckboxDiv = "<div class='customCheckbox'></div>";
+                    //this.addClass("customCheckbox");
+                    var buttonDiv = "<div class='button'></div>";
+                    var itemTextDiv = "<div class='itemText'></div>";
+                    debugger;
+                    this.append(buttonDiv);
+                    this.append(itemTextDiv);
+                    var clone;
+                    var itemText;
+                    for (var i = 0; i < model.length; i++) {
+                        //clone = checkbox.cloneNode(true);
+                        clone = this.append(customCheckboxDiv)
+                        itemText = clone.getElementsByClassName("itemText")[0];
+                        itemText.innerHTML = model[i].name;
+                        clone.id = "c" + i;
+                        clone.addEventListener("click", checkboxClick);
+                        this.appendChild(clone);
+                    }
+                    //checkbox.remove();
+                }
+
+                function checkboxClick(event) {
+                    //console.log("event.target", event.target);   
+                    //console.log("event.currentTarget", event.currentTarget);           
+
+                    console.log(id);
+                    var btn;
+                    var item;
+                    for (var i = 0; i < model.length; i++) {
+                        item = document.getElementById("c" + i);
+                        btn = item.getElementsByClassName("button")[0];
+                        btn.classList.remove("button-selected");
+                        model[i].value = false;
+                    }
+
+                    var id = parseInt(event.currentTarget.id.substr(1));
+                    model[id].value = true;
+                    btn = event.currentTarget.getElementsByClassName("button")[0];
+                    btn.classList.add("button-selected");
+
+                    console.log(model);
+
+                }
+
+            };
+        })(jQuery);
+
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            $("div").radio();
+        }
+
+
+
+    </script>
+    <style>
+        .customCheckbox {
+            display: flex;
+            width: 150px;
+            height: 30px;
+            background: red;
+            align-items: center;
+        }
+
+        .button {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: black;
+            border: 1px red solid;
+            vertical-align: middle;
+        }
+
+        .button-selected {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: green;
+            border: 1px red solid;
+            vertical-align: middle;
+        }
+
+        .itemText {
+            display: inline-block;
+            /* height: 10px; */
+            vertical-align: middle;
+            font-weight: bold;
+            color: white;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+
+
+</body></html>
