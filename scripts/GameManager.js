@@ -6,7 +6,6 @@ let GameManager = (function () {
         this.boardHeight = 800;
         this.element = document.createElement("div");
         this.element.className = "board";
-        //this.invadersContainer = new Sprite("invadersContainer");
 
         this.alienColumns = 11;
         this.alienRows = 5;
@@ -40,15 +39,37 @@ let GameManager = (function () {
         //shields
         this.shields = [];
 
+
+        //alien bullet variables
+        this.bulletsPool = [];
+        this.activeBullets = [];
+        this.poolSize = 20;
+        this.alienRequestFireTimerReference;
+        this.alienRequestFireTime = 500;
+        this.moveBulletsReference;
+        this.alienBulletSpeed = 5;
+        this.moveAlienFireCalls = 0;
+
         this.createInvaders();
         this.createBattleShip();
         this.createShields();
+        this.createBulletPool();
         this.startGame();
     }
 
     GameManager.prototype = {
         getElement: function () {
             return this.element;
+        },
+
+        createBulletPool: function () {
+            var bullet;
+            for (var i = 0; i < this.poolSize; i++) {
+                bullet = new MultiStateSprite(["alienBullet1", "alienBullet2"], 9, 27);
+                this.bulletsPool.push(bullet);
+                document.body.appendChild(bullet.getElement());
+                bullet.position({ x: -100, y: -100 });
+            }
         },
 
         createShields: function () {
@@ -86,10 +107,8 @@ let GameManager = (function () {
             var invader;
             var invaders = this.invaders;
             var alien;
-            ///var invadersContainerElement = this.invadersContainer.getElement();
             var body = document.body;
 
-            //body.appendChild(invadersContainerElement);
             for (var i = 0; i < this.alienRows; i++) {
                 invaders[i] = [];
                 this.invadersModel[i] = [];
@@ -102,22 +121,17 @@ let GameManager = (function () {
                     body.appendChild(invader.getElement());
                 }
             }
-            //this.determineAlienContainerDimensions();
         },
 
         fire: function () {
-            //console.log("---------------->", this.firing);
             if (!this.firing) {
                 this.initiateFire();
-                //console.log("setting fire to true");
                 this.firing = true;
                 this.shoot.play();
             }
         },
 
         initiateFire: function () {
-            //console.count()
-            //console.log("initiate fire");
             this.fireSprite.position({
                 x: this.battleShip.getPosition().x + 19,
                 y: 800 - 50
@@ -133,42 +147,41 @@ let GameManager = (function () {
                 fireY += this.fireSpeed;
                 this.fireSprite.position({
                     x: this.fireSprite.getPosition().x,
-                    y: fireY 
+                    y: fireY
                 });
                 this.fireFrame = requestAnimationFrame(() => {
                     this.moveFire();
                 });
                 hitInvader = this.testHitAlien();
-                hitBrick = this.testHitShield();
+                hitBrick = this.testHitShield(this.fireSprite);
 
                 if (hitBrick) {
                     this.brickIsHit(hitBrick);
+                    this.cancelBattleShipFire();
                 }
 
                 if (hitInvader) {
                     this.invaderDie(hitInvader);
+                    this.cancelBattleShipFire();
                 }
 
             } else {
-                this.firing = false;
-                cancelAnimationFrame(this.fireFrame);
-                this.fireFrame = null;
-                this.fireSprite.position({
-                    x: -1000,
-                    y: fireY
-                });
+                this.cancelBattleShipFire();
             }
         },
 
         brickIsHit: function (hitObject) {
             var shield = hitObject.shield;
             var brick = hitObject.brick;
-            //console.log("brick is hit");
-            this.firing = false;
+
             brick.nextState();
             if (brick.getState() == 4) {
                 shield.remove(brick);
             }
+        },
+
+        cancelBattleShipFire: function () {
+            this.firing = false;
             cancelAnimationFrame(this.fireFrame);
             this.fireFrame = null;
             this.fireSprite.position({
@@ -177,8 +190,8 @@ let GameManager = (function () {
             });
         },
 
-        testHitShield: function () {
-            var bulletBBox = this.fireSprite.getBoundingBox();
+        testHitShield: function (fireSprite) {
+            var bulletBBox = fireSprite.getBoundingBox();
             var shield;
             var shieldBBox;
             var shieldBrickBox;
@@ -216,20 +229,12 @@ let GameManager = (function () {
                 y: invaderBBox.y
             });
             explosion.startDeath();
-            
+
             hitInvader.position({
                 x: -1000,
                 y: -1000
             });
             this.invaderKilled.play();
-            this.firing = false;
-            cancelAnimationFrame(this.fireFrame);
-            this.fireFrame = null;
-            this.fireSprite.position({
-                x: -1000,
-                y: -1000
-            });
-
         },
 
         isHit: function (box1, box2) {
@@ -259,29 +264,118 @@ let GameManager = (function () {
 
         startGame: function () {
             clearInterval(this.interval);
+            clearInterval(this.alienRequestFireTimerReference);
+            cancelAnimationFrame(this.moveBulletsReference);
             this.interval = setInterval(this.moveAliens.bind(this), this.stepTime);
+            this.alienRequestFireTimerReference = setInterval(this.alienRequestFire.bind(this), this.alienRequestFireTime);
+            this.moveAlienFire();
             this.fastInvader1.addEventListener("ended", () => {
                 //console.log("ended");
                 this.fastInvader1.play();
             });
         },
 
+        moveAlienFire: function () {
+            var bulletBBox;
+            var hitBrick;
+            var shipIsHit = false;
+            this.moveAlienFireCalls++;
+            for (var i = 0; i < this.activeBullets.length; i++) {
+                bulletBBox = this.activeBullets[i].getBoundingBox();
+                this.activeBullets[i].position({
+                    y: bulletBBox.y + this.alienBulletSpeed
+                });
+                if (this.moveAlienFireCalls % 4 == 0) {
+                    this.activeBullets[i].nextState();
+                    this.moveAlienFireCalls = 0;
+                }
+                
+
+                hitBrick = this.testHitShield(this.activeBullets[i]);
+                shipIsHit = this.testHitShip(this.activeBullets[i]);
+
+                if (shipIsHit) {
+                    //this.battleShip
+                    console.log("hit");
+                    this.removeAlienBullet(i);
+                    i--;
+                }
+
+                if (hitBrick) {
+                    this.brickIsHit(hitBrick);
+                    this.removeAlienBullet(i);
+                    i--;
+                }
+
+                if (bulletBBox.y + bulletBBox.height > this.boardHeight) {
+                    this.removeAlienBullet(i);
+                    i--;
+                }
+            }
+            this.moveBulletsReference = requestAnimationFrame(this.moveAlienFire.bind(this));
+        },
+
+        testHitShip: function(bullet) {
+            var battleShipBBox = this.battleShip.getBoundingBox();
+            var bulletBBox = bullet.getBoundingBox();
+            return this.isHit(battleShipBBox, bulletBBox);
+        },
+
+        removeAlienBullet: function (i) {
+            let bullet = this.activeBullets.splice(i, 1)[0];
+            this.returnBulletToPool(bullet);
+            bullet.position({
+                x: -100,
+                y: - 100
+            });
+        },
+
+        alienRequestFire: function () {
+            var column = Math.round(Math.random() * (this.alienColumns - 1));
+            var line = this.alienRows - 1;
+            var invaderFound = false;
+            var invader;
+            var bullet;
+            var invaderBBox;
+
+            while (!invaderFound) {
+                column = Math.round(Math.random() * (this.alienColumns - 1));
+                for (var i = line; i >= 0; i--) {
+                    if (this.invadersModel[i][column] == 1) {
+                        invaderFound = true;
+                        invader = this.invaders[i][column];
+                        break;
+                    }
+                }
+            }
+
+            invaderBBox = invader.getBoundingBox();
+            bullet = this.getBulletFromPool();
+            bullet.position({
+                x: invaderBBox.x + invaderBBox.width / 2 - bullet.getBoundingBox().width / 2,
+                y: invaderBBox.y + invaderBBox.height
+            });
+            this.activeBullets.push(bullet);
+        },
+
+        getBulletFromPool: function () {
+            return this.bulletsPool.pop();
+        },
+
+        returnBulletToPool: function (bullet) {
+            this.bulletsPool.push(bullet);
+        },
 
 
         moveAliens: function () {
             this.currentStep += this.direction;
             var invaders = this.invaders;
             var invader;
-            //var invadersContainer = this.invadersContainer; 
-            //var invadersContainerBBox = invadersContainer.getBoundingBox();
             if (this.exitRight()) {
-                //console.log("exist Right");
                 this.currentStep -= 2;
                 this.direction *= -1;
                 this.difficulty++;
-                //debugger;
             } else if (this.exitLeft()) {
-                //console.log("exist Left");
                 this.currentStep += 2;
                 this.direction *= -1;
                 this.difficulty++;
@@ -289,7 +383,6 @@ let GameManager = (function () {
                     this.stepTime -= 50;
                     this.startGame();
                 }
-               // debugger;
             }
 
             for (var i = 0; i < this.alienRows; i++) {
@@ -333,7 +426,7 @@ let GameManager = (function () {
                 }
             }
             return false;
-        }  
+        }
     }
 
 
