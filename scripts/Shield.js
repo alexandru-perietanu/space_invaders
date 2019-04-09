@@ -7,7 +7,7 @@ let Shield = (function () {
         this.bricks = [["shieldFullBrickUpLeft", "shieldFullBrick", "shieldFullBrickUpRight"],
         ["shieldFullBrick", "shieldFullBrick", "shieldFullBrick"],
         ["shieldFullBrick", "shieldFullBrickBottomMiddle", "shieldFullBrick"],
-        ["shieldFullBrick", "", "shieldFullBrick"],];
+        ["shieldFullBrick", "", "shieldFullBrick"]];
         this.brickSprites = undefined;
         this.hitMatrix = undefined;
         this.createShield();
@@ -54,7 +54,20 @@ let Shield = (function () {
                 }
             }
             this.hitMatrix[3][1] = 0;
+        },
+
+        reset: function() {
+            var brick;
+            for (var i = 0; i < this.bricks.length; i++) {
+                for (var j = 0; j < this.bricks[i].length; j++) {
+                    brick = this.brickSprites[i][j];
+                    this.hitMatrix[i][j] = 1;
+                    brick.firstState();
+                }
+            }
+            this.hitMatrix[3][1] = 0;
         }
+
     });
 
     return Shield;

@@ -32,6 +32,11 @@ let MultiStateSprite = (function() {
         _setState: function(className) {
             this.getElement().className = className;
             this.className = className;
+        }, 
+
+        firstState: function() {
+            this._setState(this.classNames[0]);
+            this.currentState = 0;
         }
     });
 

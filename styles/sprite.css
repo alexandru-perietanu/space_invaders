@@ -73,6 +73,22 @@ div {
     background: url("../images/battleShip.png");
 }
 
+.battleShipDead1 {
+    display: inline-block;
+    width: 39px;
+    height: 24px;
+    position: absolute;
+    background: url("../images/battleShipDead1.png");
+}
+
+.battleShipDead2 {
+    display: inline-block;
+    width: 39px;
+    height: 24px;
+    position: absolute;
+    background: url("../images/battleShipDead2.png");
+}
+
 .smallAlien1 {
     display: inline-block;
     position: absolute;

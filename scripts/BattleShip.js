@@ -1,7 +1,9 @@
 let BattleShip = (function () {
 
-    function BattleShip(fireCallBack, limitLeft, limitRight) {
-        Sprite.call(this, "battleShip", 39, 24);
+    function BattleShip(fireCallBack, dieCallBack, limitLeft, limitRight) {
+        
+        //Sprite.call(this, "battleShip", 39, 24);
+        MultiStateSprite.call(this, ["battleShip", "battleShipDead1", "battleShipDead2"], 39, 24);
         this.keyDownListener;
         this.keyUpListener;
         this.addListeners();
@@ -15,18 +17,20 @@ let BattleShip = (function () {
         this.fireCallBack = fireCallBack;
         this.limitLeft = limitLeft;
         this.limitRight = limitRight;
+        this.dieCallBack = dieCallBack;
+        this.deathLoop = 0;
+        this.isDead = false;
 
         this.animateMove();
         this.requestFire();
     }
 
-    BattleShip.prototype = Object.create(Sprite.prototype);
+    BattleShip.prototype = Object.create(MultiStateSprite.prototype);
 
     Object.assign(BattleShip.prototype, {
         constructor: BattleShip,
 
         addListeners: function () {
-            var element = this.getElement();
             this.keyDownListener = this.keyDown.bind(this);
             this.keyUpListener = this.keyUp.bind(this);
             window.addEventListener("keydown", this.keyDownListener);
@@ -35,6 +39,12 @@ let BattleShip = (function () {
 
         keyDown: function (e) {
             //console.log("key down");
+            if (this.isDead) {
+                this.leftIsDown = false;
+                this.rightIsDown = false;
+                this.spaceIsDown = false;
+                return;
+            }
             switch (e.code) {
                 case "ArrowLeft":
                     this.leftIsDown = true;
@@ -82,7 +92,7 @@ let BattleShip = (function () {
 
         requestFire: function () {
             this.fireFrameReference = requestAnimationFrame(() => {
-                if (this.spaceIsDown) {
+                if (this.spaceIsDown && !this.isDead) {
                     this.fireCallBack();
                 }
                 this.requestFire();
@@ -93,7 +103,7 @@ let BattleShip = (function () {
             var x = this.x;
             this.frameReference = requestAnimationFrame(() => {
                 x += this.moveSpeed * this.moveDirection;
-                if (this.leftIsDown || this.rightIsDown) {
+                if ((this.leftIsDown || this.rightIsDown) && !this.isDead) {
                     this.move(x);
                 }
                 this.animateMove();
@@ -109,6 +119,33 @@ let BattleShip = (function () {
             }
             this.position({ x: newX })
 
+        },
+
+        deathAnimation: function() {
+            if (this.getState() == 2) {
+                this.prevState();
+            } else {
+                this.nextState();
+            }
+            if (this.deathLoop < 10) {
+                setTimeout(this.deathAnimation.bind(this), 100);
+                this.deathLoop++;
+            } else {
+                this.dieCallBack();
+            }
+        },
+
+        die: function() {
+            this.deathLoop = 0;
+            this.isDead = true;
+            this.nextState();
+            setTimeout(this.deathAnimation.bind(this), 100);
+            
+        },
+
+        revive: function() {
+            this.firstState();
+            this.isDead = false;
         }
     });
 
